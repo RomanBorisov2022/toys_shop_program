@@ -1,9 +1,14 @@
 public class Toy {
     private int id;
     private String name;
-    private int frequency;
+    private int quantity;
+    private double weight;
 
-    public Toy(int id2, String name2, int frequency2) {
+    public Toy(int id, String name, int quantity, double weight) {
+        this.id = id;
+        this.name = name;
+        this.quantity = quantity;
+        this.weight = weight;
     }
 
     public int getId() {
@@ -22,11 +27,19 @@ public class Toy {
         this.name = name;
     }
 
-    public int getFrequency() {
-        return frequency;
+    public int getQuantity() {
+        return quantity;
     }
 
-    public void setFrequency(int frequency) {
-        this.frequency = frequency;
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(double weight) {
+        this.weight = weight;
     }
 }
