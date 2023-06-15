@@ -1,37 +1,54 @@
-
-import java.io.FileWriter;
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.PriorityQueue;
+import java.util.Random;
 
 public class ToyQueue {
-
-    private PriorityQueue<Toy> toys;
+    private PriorityQueue<Toy> queue;
+    private Random random;
+    private List<Toy> prizeToys;
 
     public ToyQueue() {
-        toys = new PriorityQueue<Toy>(new ToyComparator());
+        queue = new PriorityQueue<>((t1, t2) -> (int) (t1.getWeight() - t2.getWeight()));
+        random = new Random();
+        prizeToys = new ArrayList<>();
     }
 
     public void addToy(Toy toy) {
-        toys.add(toy);
+        queue.add(toy);
     }
 
-    public void getToys() {
-        try {
-            FileWriter fileWriter = new FileWriter("result.txt");
-            for (int i = 0; i < 10; i++) {
-                Toy toy = toys.poll();
-                double random = Math.random();
-                if (random <= 0.2) {
-                    toy = toys.stream().filter(t -> t.getId() == 1).findFirst().get();
-                } else if (random <= 0.4) {
-                    toy = toys.stream().filter(t -> t.getId() == 2).findFirst().get();
-                }
-                fileWriter.write(toy.getName() + "\n");
-            }
-            fileWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+    public void updateToyWeight(String id, double weight) {
+        Toy toy = queue.stream().filter(t -> t.getId().equals(id)).findFirst().orElse(null);
+        if (toy != null) {
+            toy.setWeight(weight);
         }
     }
 
+    private Toy chooseToy() {
+        double rand = random.nextDouble() * 100;
+        if (rand < 20) {
+            return queue.stream().filter(t -> t.getWeight() <= 1).findFirst().orElse(null);
+        } else if (rand < 40) {
+            return queue.stream().filter(t -> t.getWeight() > 1 && t.getWeight() <= 2).findFirst().orElse(null);
+        } else {
+            return queue.stream().filter(t -> t.getWeight() > 2 && t.getWeight() <= 6).findFirst().orElse(null);
+        }
+    }
+
+    public boolean givePrizeToy() {
+        if (!queue.isEmpty()) {
+            Toy prizeToy = chooseToy();
+            if (prizeToy != null) {
+                queue.remove(prizeToy);
+                prizeToys.add(prizeToy);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public List<Toy> getAllPrizeToys() {
+        return prizeToys;
+    }
 }
